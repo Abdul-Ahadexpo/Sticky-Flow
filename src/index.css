@@ -11,11 +11,13 @@
 }
 
 .font-main-text {
-  font-family: 'Patrick Hand', cursive;
+  font-family: 'Patrick Hand', Caveat;
 }
 
 .font-hidden-text {
-  font-family: 'Homemade Apple', cursive;
+  font-family: 'Indie Flower', Caveat;
+ font-weight: 400;
+  font-size: 20px
 }
 
 .font-date-text {
