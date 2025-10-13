@@ -48,7 +48,7 @@ export default function HomePage() {
           <h1 className="text-5xl md:text-7xl font-bold text-[#212121] mb-2 md:mb-4 font-main-text" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.1)' }}>
             Sticky Flow
           </h1>
-          <p className="text-lg md:text-xl text-gray-700 font-date-text">Your wall of memories and thoughts</p>
+          <p className="text-lg md:text-xl text-gray-700 font-date-text">My wall of thoughts from 13/09/2025</p>
         </motion.div>
 
         {notes.length === 0 ? (
