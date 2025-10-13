@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
+
+.font-handwriting {
+  font-family: 'Caveat', cursive;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(var(--rotate));
+  }
+  50% {
+    transform: translateY(-10px) rotate(var(--rotate));
+  }
+}
+
+.animate-float {
+  --rotate: 0deg;
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float:nth-child(2n) {
+  --rotate: -2deg;
+  animation-delay: 1s;
+}
+
+.animate-float:nth-child(3n) {
+  --rotate: 2deg;
+  animation-delay: 2s;
+}
+
+.animate-float:nth-child(4n) {
+  --rotate: -3deg;
+  animation-delay: 0.5s;
+}
+
+.animate-float:nth-child(5n) {
+  --rotate: 3deg;
+  animation-delay: 1.5s;
+}
