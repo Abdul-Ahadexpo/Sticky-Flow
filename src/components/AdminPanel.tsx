@@ -64,13 +64,13 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   };
 
   return (
-    <div className="min-h-screen p-6" style={{ background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)' }}>
+    <div className="min-h-screen p-6 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800">Admin Panel</h1>
+          <h1 className="text-4xl font-bold text-white font-main-text">Admin Panel</h1>
           <button
             onClick={onLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors shadow-lg"
           >
             <LogOut className="w-5 h-5" />
             Logout
@@ -79,39 +79,39 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           {/* Add Note Form */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <Plus className="w-6 h-6" />
+          <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-2xl p-6">
+            <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+              <Plus className="w-6 h-6 text-yellow-400" />
               Add New Note
             </h2>
             <form onSubmit={handleAddNote} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Main Text *
                 </label>
                 <textarea
                   value={mainText}
                   onChange={(e) => setMainText(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
                   rows={3}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Hidden Description (Optional)
                 </label>
                 <textarea
                   value={hiddenDescription}
                   onChange={(e) => setHiddenDescription(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
                   rows={3}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Date (DD/MM/YY) *
                 </label>
                 <input
@@ -119,7 +119,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
                   placeholder="01/01/25"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
                   required
                 />
               </div>
@@ -130,16 +130,16 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   id="markWithX"
                   checked={markWithX}
                   onChange={(e) => setMarkWithX(e.target.checked)}
-                  className="w-5 h-5 text-yellow-400 border-gray-300 rounded focus:ring-yellow-400"
+                  className="w-5 h-5 text-yellow-400 border-gray-600 rounded focus:ring-yellow-400 bg-gray-700"
                 />
-                <label htmlFor="markWithX" className="text-sm font-medium text-gray-700">
-                  Mark with X
+                <label htmlFor="markWithX" className="text-sm font-medium text-gray-300">
+                  Mark with Bloody X
                 </label>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-semibold py-3 rounded-lg transition-colors"
+                className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-3 rounded-lg transition-colors shadow-lg"
               >
                 Add Note
               </button>
@@ -147,20 +147,20 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           </div>
 
           {/* Help Text Editor */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <Save className="w-6 h-6" />
+          <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-2xl p-6">
+            <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+              <Save className="w-6 h-6 text-green-400" />
               Edit Help Text
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Help Content
                 </label>
                 <textarea
                   value={helpText}
                   onChange={(e) => setHelpText(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-green-400 focus:border-transparent outline-none"
                   rows={10}
                   placeholder="Enter help information..."
                 />
@@ -168,7 +168,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
               <button
                 onClick={handleSaveHelp}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition-colors"
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition-colors shadow-lg"
               >
                 Save Help Text
               </button>
@@ -177,29 +177,33 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
         </div>
 
         {/* Notes List */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-2xl p-6">
+          <h2 className="text-2xl font-bold text-white mb-4">
             All Notes ({notes.length})
           </h2>
           <div className="space-y-2 max-h-96 overflow-y-auto">
-            {notes.map((note) => (
-              <div key={note.id} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-800">{note.mainText}</p>
-                    {note.hiddenDescription && (
-                      <p className="text-sm text-gray-600 mt-1">Hidden: {note.hiddenDescription}</p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2 ml-4">
-                    <span className="text-sm text-gray-600">{note.date}</span>
-                    {note.markWithX && (
-                      <span className="bg-red-600 text-white text-xs px-2 py-1 rounded">X</span>
-                    )}
+            {notes.length === 0 ? (
+              <p className="text-gray-400 text-center py-8">No notes yet</p>
+            ) : (
+              notes.map((note) => (
+                <div key={note.id} className="p-4 border border-gray-700 rounded-lg hover:bg-gray-700/50 transition-colors">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <p className="font-medium text-white">{note.mainText}</p>
+                      {note.hiddenDescription && (
+                        <p className="text-sm text-gray-400 mt-1">Hidden: {note.hiddenDescription}</p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 ml-4">
+                      <span className="text-sm text-gray-400 font-date-text">{note.date}</span>
+                      {note.markWithX && (
+                        <span className="bg-red-600 text-white text-xs px-2 py-1 rounded">X</span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
