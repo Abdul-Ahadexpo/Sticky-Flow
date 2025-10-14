@@ -15,9 +15,7 @@
 }
 
 .font-hidden-text {
-  font-family: 'Indie Flower', Caveat;
- font-weight: 400;
-  font-size: 20px
+  font-family: 'Homemade Apple', cursive;
 }
 
 .font-date-text {
@@ -141,5 +139,38 @@
   }
   75% {
     transform: rotate(-1deg) translateX(-2px);
+  }
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  .perspective-1000 {
+    perspective: 1500px;
+  }
+
+  .sticky-note-shadow {
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.15),
+      0 6px 12px rgba(0,0,0,0.1),
+      0 12px 20px rgba(0,0,0,0.08),
+      inset 0 -3px 6px rgba(0,0,0,0.06);
+  }
+
+  /* Smooth transitions between layouts */
+  * {
+    transition: opacity 0.3s ease-in-out;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  input, textarea, button {
+    user-select: auto;
   }
 }
