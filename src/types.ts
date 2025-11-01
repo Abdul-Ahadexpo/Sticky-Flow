@@ -2,6 +2,8 @@ export interface Note {
   id: string;
   mainText: string;
   hiddenDescription?: string;
+  hiddenType?: 'text' | 'image';
+  hiddenImageUrl?: string;
   date: string;
   markWithX: boolean;
   createdAt: number;

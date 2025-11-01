@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ref, push, onValue, set, remove } from 'firebase/database';
 import { database } from '../firebase';
 import { Note, VisitorData } from '../types';
-import { LogOut, Plus, Save, Users, StickyNote as StickyNoteIcon } from 'lucide-react';
+import { LogOut, Plus, Save, Users, StickyNote as StickyNoteIcon, Upload, X } from 'lucide-react';
 import VisitorCard from './VisitorCard';
+import { uploadImageToImgbb } from '../utils/imgbbUpload';
 
 interface AdminPanelProps {
   onLogout: () => void;
@@ -13,6 +14,13 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState<'notes' | 'visitors'>('notes');
   const [mainText, setMainText] = useState('');
   const [hiddenDescription, setHiddenDescription] = useState('');
+  const [hiddenType, setHiddenType] = useState<'text' | 'image'>('text');
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [date, setDate] = useState('');
   const [markWithX, setMarkWithX] = useState(false);
   const [helpText, setHelpText] = useState('');
@@ -66,13 +74,69 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setSelectedImage(file);
+    setUploadError(null);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setImagePreview(event.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleUploadImage = async () => {
+    if (!selectedImage) {
+      setUploadError('No image selected');
+      return;
+    }
+
+    setIsUploadingImage(true);
+    setUploadError(null);
+
+    try {
+      const url = await uploadImageToImgbb(selectedImage);
+      setUploadedImageUrl(url);
+      setSelectedImage(null);
+      setImagePreview(null);
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : 'Upload failed');
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    setUploadedImageUrl(null);
+    setUploadError(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleAddNote = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (hiddenType === 'text' && !hiddenDescription && hiddenType === 'text') {
+      alert('Please enter hidden text or select image mode');
+      return;
+    }
+
+    if (hiddenType === 'image' && !uploadedImageUrl) {
+      alert('Please upload an image');
+      return;
+    }
 
     const notesRef = ref(database, 'notes');
     await push(notesRef, {
       mainText,
-      hiddenDescription,
+      ...(hiddenType === 'text' && { hiddenDescription, hiddenType: 'text' }),
+      ...(hiddenType === 'image' && { hiddenImageUrl: uploadedImageUrl, hiddenType: 'image' }),
       date,
       markWithX,
       createdAt: Date.now(),
@@ -82,6 +146,11 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     setHiddenDescription('');
     setDate('');
     setMarkWithX(false);
+    setHiddenType('text');
+    setSelectedImage(null);
+    setImagePreview(null);
+    setUploadedImageUrl(null);
+    setUploadError(null);
   };
 
   const handleSaveHelp = async () => {
@@ -154,15 +223,129 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Hidden Description (Optional)
+                  Hidden Content Type
                 </label>
-                <textarea
-                  value={hiddenDescription}
-                  onChange={(e) => setHiddenDescription(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
-                  rows={3}
-                />
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      value="text"
+                      checked={hiddenType === 'text'}
+                      onChange={(e) => {
+                        setHiddenType(e.target.value as 'text' | 'image');
+                        setUploadedImageUrl(null);
+                        setImagePreview(null);
+                        setSelectedImage(null);
+                      }}
+                      className="w-4 h-4 text-yellow-400 border-gray-300 focus:ring-yellow-400"
+                    />
+                    <span className="text-sm text-gray-700">Text Mode</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      value="image"
+                      checked={hiddenType === 'image'}
+                      onChange={(e) => {
+                        setHiddenType(e.target.value as 'text' | 'image');
+                        setHiddenDescription('');
+                      }}
+                      className="w-4 h-4 text-yellow-400 border-gray-300 focus:ring-yellow-400"
+                    />
+                    <span className="text-sm text-gray-700">Image Mode</span>
+                  </label>
+                </div>
               </div>
+
+              {hiddenType === 'text' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Hidden Description (Optional)
+                  </label>
+                  <textarea
+                    value={hiddenDescription}
+                    onChange={(e) => setHiddenDescription(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
+                    rows={3}
+                  />
+                </div>
+              )}
+
+              {hiddenType === 'image' && (
+                <div className="space-y-3 p-4 bg-gray-100 rounded-lg">
+                  {!uploadedImageUrl ? (
+                    <>
+                      <div className="border-2 border-dashed border-gray-400 rounded-lg p-4 text-center">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileSelect}
+                          className="hidden"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="flex items-center justify-center gap-2 w-full text-gray-700 hover:text-gray-900 font-medium"
+                        >
+                          <Upload className="w-5 h-5" />
+                          Click to select image
+                        </button>
+                      </div>
+
+                      {imagePreview && (
+                        <div className="space-y-2">
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            className="w-full h-32 object-cover rounded-lg"
+                          />
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={handleUploadImage}
+                              disabled={isUploadingImage}
+                              className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-medium py-2 rounded-lg transition-colors"
+                            >
+                              {isUploadingImage ? 'Uploading...' : 'Upload Image'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleRemoveImage}
+                              className="flex items-center justify-center gap-1 px-3 bg-gray-400 hover:bg-gray-500 text-white rounded-lg transition-colors"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {uploadError && (
+                        <div className="text-red-600 text-sm font-medium">
+                          {uploadError}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-700 font-medium">Image uploaded successfully!</p>
+                      <img
+                        src={uploadedImageUrl}
+                        alt="Uploaded"
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        className="w-full flex items-center justify-center gap-2 px-3 bg-red-500 hover:bg-red-600 text-white font-medium py-2 rounded-lg transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                        Remove Image
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -241,8 +424,11 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <p className="font-medium text-gray-800">{note.mainText}</p>
-                    {note.hiddenDescription && (
-                      <p className="text-sm text-gray-600 mt-1">Hidden: {note.hiddenDescription}</p>
+                    {note.hiddenType === 'text' && note.hiddenDescription && (
+                      <p className="text-sm text-gray-600 mt-1">Hidden Text: {note.hiddenDescription}</p>
+                    )}
+                    {note.hiddenType === 'image' && note.hiddenImageUrl && (
+                      <p className="text-sm text-gray-600 mt-1">Hidden Image: {note.hiddenImageUrl}</p>
                     )}
                   </div>
                   <div className="flex items-center gap-2 ml-4">
