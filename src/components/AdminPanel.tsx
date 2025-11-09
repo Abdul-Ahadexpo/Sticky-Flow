@@ -472,6 +472,27 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               </div>
             </div>
 
+            {visitors.length > 0 && (
+              <div className="bg-red-900/20 border border-red-700 rounded-lg shadow-lg p-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <h3 className="font-bold text-red-300 mb-2">Danger Zone</h3>
+                    <p className="text-red-200 text-sm mb-3">
+                      Reset all visitor records to force everyone to login again. This action is permanent and cannot be undone.
+                    </p>
+                    <button
+                      onClick={handleResetAllVisitors}
+                      className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Reset All Visitors
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {visitors.length === 0 ? (
               <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-2xl p-12 text-center">
                 <Users className="w-16 h-16 text-gray-600 mx-auto mb-4" />
