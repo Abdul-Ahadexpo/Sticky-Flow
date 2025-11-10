@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { ref, push, onValue, set, remove } from 'firebase/database';
 import { database } from '../firebase';
 import { Note, VisitorData } from '../types';
-import { LogOut, Plus, Save, Users, StickyNote as StickyNoteIcon, Upload, X } from 'lucide-react';
+import { LogOut, Plus, Save, Users, StickyNote as StickyNoteIcon, Upload, X, AlertCircle, Trash2 } from 'lucide-react';
 import VisitorCard from './VisitorCard';
 import { uploadImageToImgbb } from '../utils/imgbbUpload';
 
@@ -71,6 +71,29 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     } catch (error) {
       console.error('Error deleting visitor:', error);
       alert('Failed to delete visitor. Please try again.');
+    }
+  };
+
+  const handleResetAllVisitors = async () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to reset ALL visitor records? This will force all users to login again.\n\nThis action cannot be undone.'
+    );
+
+    if (!confirmed) return;
+
+    const doubleConfirm = window.confirm(
+      'This is a permanent action. Are you absolutely certain?'
+    );
+
+    if (!doubleConfirm) return;
+
+    try {
+      const visitorsRef = ref(database, 'visitors');
+      await remove(visitorsRef);
+      alert('All visitor records have been reset. Users will need to login again on their next visit.');
+    } catch (error) {
+      console.error('Error resetting visitors:', error);
+      alert('Failed to reset visitors. Please try again.');
     }
   };
 
@@ -162,15 +185,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   return (
     <div className="min-h-screen p-6 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="mb-8">
           <h1 className="text-4xl font-bold text-white font-main-text">Admin Panel</h1>
-          <button
-            onClick={onLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors shadow-lg"
-          >
-            <LogOut className="w-5 h-5" />
-            Logout
-          </button>
         </div>
 
         <div className="flex gap-4 mb-8">
@@ -512,6 +528,14 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           </div>
         )}
       </div>
+
+      <button
+        onClick={onLogout}
+        className="fixed bottom-4 left-4 flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors shadow-lg z-50"
+      >
+        <LogOut className="w-5 h-5" />
+        Logout
+      </button>
     </div>
   );
 }

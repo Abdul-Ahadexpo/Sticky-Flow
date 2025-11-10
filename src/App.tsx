@@ -69,7 +69,7 @@ function App() {
       <HomePage />
       <button
         onClick={() => setShowAdminLogin(true)}
-        className="fixed bottom-4 right-4 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-full shadow-lg text-sm opacity-50 hover:opacity-100 transition-opacity z-50"
+        className="fixed bottom-4 left-4 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-full shadow-lg text-sm opacity-50 hover:opacity-100 transition-opacity z-50"
       >
         Admin
       </button>
