@@ -5,6 +5,7 @@ import { Note, VisitorData } from '../types';
 import { LogOut, Plus, Save, Users, StickyNote as StickyNoteIcon, Upload, X, AlertCircle, Trash2 } from 'lucide-react';
 import VisitorCard from './VisitorCard';
 import { uploadImageToImgbb } from '../utils/imgbbUpload';
+import { clearVisitorConsent } from '../utils/visitorData';
 
 interface AdminPanelProps {
   onLogout: () => void;
@@ -68,6 +69,10 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     try {
       const visitorRef = ref(database, `visitors/${visitorId}`);
       await remove(visitorRef);
+      const storedVisitorId = localStorage.getItem('visitorId');
+      if (storedVisitorId === visitorId) {
+        clearVisitorConsent();
+      }
     } catch (error) {
       console.error('Error deleting visitor:', error);
       alert('Failed to delete visitor. Please try again.');
@@ -90,7 +95,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     try {
       const visitorsRef = ref(database, 'visitors');
       await remove(visitorsRef);
-      alert('All visitor records have been reset. Users will need to login again on their next visit.');
+      clearVisitorConsent();
+      alert('All visitor records have been reset. All users (including you) will need to login again on their next visit.');
     } catch (error) {
       console.error('Error resetting visitors:', error);
       alert('Failed to reset visitors. Please try again.');
