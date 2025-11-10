@@ -145,3 +145,9 @@ export function hasVisitorConsented(): boolean {
 export function setVisitorConsented(): void {
   localStorage.setItem('visitorConsented', 'true');
 }
+
+export function clearVisitorConsent(): void {
+  localStorage.removeItem('visitorConsented');
+  localStorage.removeItem('visitorId');
+  localStorage.removeItem('visitorName');
+}
